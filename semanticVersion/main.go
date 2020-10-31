@@ -3,8 +3,10 @@ package main
 import (
     "fmt"
     "log"
+    "bytes"
     "strings"
     "strconv"
+    "os/exec"
     "io/ioutil"
 
     "gopkg.in/yaml.v2"
@@ -56,6 +58,19 @@ func (v *Config)GetVersion() SemanticVersion {
 	return sm
 }
 
+func ExecGitCommand() {
+    var out bytes.Buffer
+	cmd := exec.Command("git", "log -n 1 --pretty=format:%s $hash")
+
+	err := cmd.Run()
+	if err != nil {
+	    // something went wrong
+	}
+
+	cmd.Stdout = &out
+	fmt.Printf("%s\n", out)
+
+}
 
 func main() {
 	var v Config
@@ -68,4 +83,5 @@ func main() {
 	fmt.Println("Next Version: ", sm.Major)
 	fmt.Println("Next Version: ", sm.Minor)
 	fmt.Println("Next Version: ", sm.Patch)
+	ExecGitCommand()
 }
